@@ -4,7 +4,7 @@ var srcConnection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "medigle",
+  database: "newMedigle",
 });
 
 exports.facilities = async (req, res) => {
