@@ -1,10 +1,10 @@
 var mysql = require("mysql");
 
 var srcConnection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "newMedigle",
+  host: process.env.db_post,
+  user: process.env.db_user,
+  password: process.env.db_password,
+  database: "newmedigle",
 });
 
 exports.facilities = async (req, res) => {
@@ -41,7 +41,7 @@ exports.facilities = async (req, res) => {
           }
           const response = {
             data: results,
-            total: totalCount,
+            total: totalCount ? totalCount : 0,
           };
           res.json(response);
         }

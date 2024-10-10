@@ -19,23 +19,23 @@ app.use("/api", apiRouter);
 //Routes
 app.post("/sync", function (req, res) {
   var srcConnection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: process.env.db_post,
+    user: process.env.db_user,
+    password: process.env.db_password,
     database: "medigle",
   });
 
   var dstConnection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: process.env.host,
+    user: process.env.db_user,
+    password: process.env.db_password,
     database: "newMedigle",
   });
 
   var mgConnection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: process.env.host,
+    user: process.env.db_user,
+    password: process.env.db_password,
     database: "newMedigle",
   });
 
