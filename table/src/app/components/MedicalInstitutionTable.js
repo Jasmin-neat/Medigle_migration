@@ -15,6 +15,7 @@ const MedicalInstitutionTable = () => {
   useEffect(() => {
     async function func() {
       let temp = await getData(1);
+      if (temp.error) return;
       setData(temp.data);
       setTotal(temp.total);
     }
@@ -25,7 +26,6 @@ const MedicalInstitutionTable = () => {
     if (pageNumber > 1) {
       let tempNum = pageNumber - 1;
       setPageNumber(tempNum);
-      console.log(tempNum, total);
       setPageStart(100 * (tempNum - 1) + 1);
       setPageEnd(100 * tempNum);
       let temp = await getData(tempNum);
@@ -35,9 +35,9 @@ const MedicalInstitutionTable = () => {
 
   const nextPage = async () => {
     if (pageNumber < total / 100) {
-      let tempNum = pageNumber + 1;
+      let tempNum = pageNumber;
+      tempNum++;
       setPageNumber(tempNum);
-      console.log(tempNum, total);
       setPageStart(100 * (tempNum - 1) + 1);
       setPageEnd(100 * tempNum);
       let temp = await getData(tempNum);
@@ -46,6 +46,7 @@ const MedicalInstitutionTable = () => {
   };
 
   const pageNavigate = async () => {
+    if (100 * pageNumber > total) return;
     setPageStart(100 * (pageNumber - 1) + 1);
     setPageEnd(100 * pageNumber);
     let temp = await getData(pageNumber);
@@ -114,87 +115,88 @@ const MedicalInstitutionTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((institution) => (
-            <tr
-              key={institution.id}
-              className="text-center border border-black cursor-pointer"
-              onClick={() => handleRowClick(institution.id)}
-            >
-              <td className="px-4 py-2 border border-black">
-                <select
-                  className={`px-2 py-1 w-full border rounded ${
-                    institution.contract_status === "1" ||
-                    institution.contract_status === 1
-                      ? "bg-[#c7d1b5]"
-                      : "bg-[#c8d3e6]"
-                  }`}
-                  value={institution.contract_status}
-                  onChange={(e) =>
-                    handleChange(e, institution.id, "contract_status")
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <option value="1">-</option>
-                  <option value="0">○</option>
-                </select>
-              </td>
+          {data &&
+            data.map((institution) => (
+              <tr
+                key={institution.id}
+                className="text-center border border-black cursor-pointer"
+                onClick={() => handleRowClick(institution.id)}
+              >
+                <td className="px-4 py-2 border border-black">
+                  <select
+                    className={`px-2 py-1 w-full border rounded ${
+                      institution.contract_status === "1" ||
+                      institution.contract_status === 1
+                        ? "bg-[#c7d1b5]"
+                        : "bg-[#c8d3e6]"
+                    }`}
+                    value={institution.contract_status}
+                    onChange={(e) =>
+                      handleChange(e, institution.id, "contract_status")
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="1">-</option>
+                    <option value="0">○</option>
+                  </select>
+                </td>
 
-              <td className="px-4 py-2 border border-black">
-                {institution.id}
-              </td>
-              <td className="px-4 py-2 border border-black">
-                {institution.facility_name}
-              </td>
-              <td className="px-4 py-2 border border-black">
-                {institution.facility_zip}
-              </td>
+                <td className="px-4 py-2 border border-black">
+                  {institution.id}
+                </td>
+                <td className="px-4 py-2 border border-black">
+                  {institution.facility_name}
+                </td>
+                <td className="px-4 py-2 border border-black">
+                  {institution.facility_zip}
+                </td>
 
-              <td className="px-4 py-2 border border-black">
-                <select
-                  className={`px-2 py-1 w-full border rounded ${
-                    institution.facility_prefecture === 13 ||
-                    institution.facility_prefecture === "13"
-                      ? "bg-[#c0c7d4]"
-                      : "bg-[#d2cfc5]"
-                  }`}
-                  value={institution.facility_prefecture}
-                  onChange={(e) =>
-                    handleChange(e, institution.id, "facility_prefecture")
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <option value="13">大阪府</option>
-                  <option value="27">東京市</option>
-                </select>
-              </td>
+                <td className="px-4 py-2 border border-black">
+                  <select
+                    className={`px-2 py-1 w-full border rounded ${
+                      institution.facility_prefecture === 13 ||
+                      institution.facility_prefecture === "13"
+                        ? "bg-[#c0c7d4]"
+                        : "bg-[#d2cfc5]"
+                    }`}
+                    value={institution.facility_prefecture}
+                    onChange={(e) =>
+                      handleChange(e, institution.id, "facility_prefecture")
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="13">大阪府</option>
+                    <option value="27">東京市</option>
+                  </select>
+                </td>
 
-              {/* Address field with dynamic background color */}
-              <td className="px-4 py-2 border border-black">
-                <select
-                  className={`px-2 py-1 w-full border rounded ${
-                    institution.facility_address === "大阪市"
-                      ? "bg-[#c4b9e6]"
-                      : "bg-[#c6cee6]"
-                  }`}
-                  value={institution.facility_address}
-                  onChange={(e) =>
-                    handleChange(e, institution.id, "facility_address")
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <option value="大阪市">大阪市</option>
-                  <option value="Osaka City">Osaka City</option>
-                </select>
-              </td>
+                {/* Address field with dynamic background color */}
+                <td className="px-4 py-2 border border-black">
+                  <select
+                    className={`px-2 py-1 w-full border rounded ${
+                      institution.facility_address === "大阪市"
+                        ? "bg-[#c4b9e6]"
+                        : "bg-[#c6cee6]"
+                    }`}
+                    value={institution.facility_address}
+                    onChange={(e) =>
+                      handleChange(e, institution.id, "facility_address")
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="大阪市">大阪市</option>
+                    <option value="Osaka City">Osaka City</option>
+                  </select>
+                </td>
 
-              <td className="px-4 py-2 border border-black">
-                {institution.facility_tel}
-              </td>
-              <td className="px-4 py-2 border border-black">
-                {institution.updated_at}
-              </td>
-            </tr>
-          ))}
+                <td className="px-4 py-2 border border-black">
+                  {institution.facility_tel}
+                </td>
+                <td className="px-4 py-2 border border-black">
+                  {institution.updated_at}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
